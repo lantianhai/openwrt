@@ -65,7 +65,7 @@ jobs:
           echo "=== 4. luci-light definition ==="
           grep -B1 -A10 "PACKAGE_luci-light$" tmp/.config-package.in 2>/dev/null | head -25 || echo "no definition"
           echo "=== 5. any < syntax ==="
-          grep -c "PACKAGE_.*<.*PACKAGE_" tmp/.config-package.in 2>/dev/null || echo "no < syntax"
+          grep -c "PACKAGE_.*<PACKAGE_" tmp/.config-package.in 2>/dev/null || echo "no < syntax"
 
       - name: Download sources
         run: make download -j$(nproc) V=s
