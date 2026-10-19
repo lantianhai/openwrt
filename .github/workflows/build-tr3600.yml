@@ -48,6 +48,11 @@ jobs:
         run: |
           echo "=== .config values ==="
           grep -E "CONFIG_PACKAGE_luci-light|CONFIG_PACKAGE_luci-base|CONFIG_PACKAGE_luci-app-firewall|CONFIG_IPV6" .config || echo "none found"
+          echo "=== dependency check ==="
+          for p in rpcd rpcd-mod-file rpcd-mod-luci rpcd-mod-ucode cgi-io ucode ucode-mod-fs ucode-mod-log ucode-mod-uci ucode-mod-ubus; do
+            c=$(grep -c "config PACKAGE_$p$" tmp/.config-package.in 2>/dev/null || echo 0)
+            echo "$p: kconfig_definitions=$c"
+          done
           echo "=== 1. feeds/luci.index ==="
           grep -c "luci-light" feeds/luci.index 2>/dev/null || echo "not in index"
           echo "=== 2. tmp/.packageinfo ==="
