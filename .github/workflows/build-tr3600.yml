@@ -48,13 +48,20 @@ jobs:
 
       - name: Verify config kept LuCI
         run: |
-          echo "=== package/feeds ==="
-          ls package/feeds/ 2>/dev/null || echo "NO package/feeds dir"
-          ls package/feeds/luci/ 2>/dev/null | head -5 || echo "NO package/feeds/luci"
-          echo "=== PACKAGE_luci in generated Kconfig ==="
-          grep -c "^config PACKAGE_luci$" tmp/.config-package.in 2>/dev/null || echo "PACKAGE_luci NOT in tmp/.config-package.in"
-          echo "=== luci lines in .config ==="
-          grep "luci" .config || echo "NONE"
+          echo "=== tmp/.config-package.in ==="
+          ls -la tmp/.config-package.in 2>/dev/null || echo "FILE MISSING"
+          echo "--- PACKAGE_luci matches ---"
+          grep -c "PACKAGE_luci" tmp/.config-package.in 2>/dev/null || echo "0 matches"
+          echo "--- luci package definition ---"
+          grep -B2 -A8 "config PACKAGE_luci$" tmp/.config-package.in 2>/dev/null | head -20 || echo "not found with tab pattern"
+          grep -B2 -A8 "PACKAGE_luci$" tmp/.config-package.in 2>/dev/null | head -20 || echo "not found broad"
+          echo "--- firewall4 definition for comparison ---"
+          grep -B2 -A5 "config PACKAGE_firewall4$" tmp/.config-package.in 2>/dev/null | head -12 || echo "firewall4 not found"
+          echo "=== .config summary ==="
+          grep -c "=y" .config
+          grep "^CONFIG_PACKAGE_luci=y" .config || echo "luci NOT =y"
+          grep "^CONFIG_PACKAGE_uhttpd=y" .config || echo "uhttpd NOT =y"
+          grep "^CONFIG_PACKAGE_firewall4=y" .config || echo "firewall4 NOT =y"
           for s in CONFIG_PACKAGE_luci CONFIG_PACKAGE_uhttpd CONFIG_PACKAGE_firewall4; do
             if ! grep -q "^${s}=y" .config; then
               echo "ERROR: $s was dropped from .config!"
