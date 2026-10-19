@@ -46,6 +46,8 @@ jobs:
 
       - name: Diagnose luci-light
         run: |
+          echo "=== .config values ==="
+          grep -E "CONFIG_PACKAGE_luci-light|CONFIG_PACKAGE_luci-base|CONFIG_PACKAGE_luci-app-firewall|CONFIG_IPV6" .config || echo "none found"
           echo "=== 1. feeds/luci.index ==="
           grep -c "luci-light" feeds/luci.index 2>/dev/null || echo "not in index"
           echo "=== 2. tmp/.packageinfo ==="
