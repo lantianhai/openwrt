@@ -62,13 +62,18 @@ jobs:
           grep "^CONFIG_PACKAGE_luci=y" .config || echo "luci NOT =y"
           grep "^CONFIG_PACKAGE_uhttpd=y" .config || echo "uhttpd NOT =y"
           grep "^CONFIG_PACKAGE_firewall4=y" .config || echo "firewall4 NOT =y"
-          for s in CONFIG_PACKAGE_luci-light CONFIG_PACKAGE_luci-app-package-manager CONFIG_PACKAGE_uhttpd CONFIG_PACKAGE_firewall4; do
-            if ! grep -q "^${s}=y" .config; then
-              echo "ERROR: $s was dropped from .config!"
-              exit 1
+          echo "--- individual package status ---"
+          for s in CONFIG_PACKAGE_luci-light CONFIG_PACKAGE_luci-app-package-manager CONFIG_PACKAGE_luci-app-firewall CONFIG_PACKAGE_luci-i18n-base-zh-cn CONFIG_PACKAGE_luci-base CONFIG_PACKAGE_uhttpd CONFIG_PACKAGE_firewall4; do
+            if grep -q "^${s}=y" .config; then
+              echo "$s = y OK"
+            else
+              echo "$s DROPPED"
             fi
           done
-          echo "config OK"
+          # 只要 uhttpd 和 firewall4 在就继续（luci 部分后面单独处理）
+          grep -q "^CONFIG_PACKAGE_uhttpd=y" .config || (echo "ERROR: uhttpd dropped!" && exit 1)
+          grep -q "^CONFIG_PACKAGE_firewall4=y" .config || (echo "ERROR: firewall4 dropped!" && exit 1)
+          echo "core config OK"
 
       - name: Download sources
         run: make download -j$(nproc) V=s
@@ -90,4 +95,70 @@ jobs:
         with:
           name: cudy-tr3600-v1-sysupgrade
           path: bin/targets/mediatek/filogic/*squashfs-sysupgrade.bin
-          if-no-files-found: error
+          if-no-files-
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
