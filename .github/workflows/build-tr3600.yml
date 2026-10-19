@@ -62,7 +62,7 @@ jobs:
           grep "^CONFIG_PACKAGE_luci=y" .config || echo "luci NOT =y"
           grep "^CONFIG_PACKAGE_uhttpd=y" .config || echo "uhttpd NOT =y"
           grep "^CONFIG_PACKAGE_firewall4=y" .config || echo "firewall4 NOT =y"
-          for s in CONFIG_PACKAGE_luci CONFIG_PACKAGE_uhttpd CONFIG_PACKAGE_firewall4; do
+          for s in CONFIG_PACKAGE_luci-light CONFIG_PACKAGE_luci-app-package-manager CONFIG_PACKAGE_uhttpd CONFIG_PACKAGE_firewall4; do
             if ! grep -q "^${s}=y" .config; then
               echo "ERROR: $s was dropped from .config!"
               exit 1
