@@ -34,7 +34,12 @@ jobs:
         run: ./scripts/feeds install -a
 
       - name: Remove deprecated firewall3
-        run: rm -rf package/network/config/firewall
+        run: |
+          rm -rf package/network/config/firewall
+          echo "=== after rm ==="
+          ls package/network/config/ | grep -i firewall || echo "no firewall dirs"
+          echo "=== PROVIDES check ==="
+          grep -r "PROVIDES:=uci-firewall" package/ feeds/ 2>/dev/null | head -5 || echo "none found"
 
       - name: Apply config
         run: make defconfig
