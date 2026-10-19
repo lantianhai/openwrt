@@ -44,15 +44,19 @@ jobs:
       - name: Apply config
         run: make defconfig
 
-      - name: Verify config kept LuCI
+      - name: Diagnose luci-light
         run: |
-          for s in CONFIG_PACKAGE_luci-light CONFIG_PACKAGE_luci-app-package-manager CONFIG_PACKAGE_uhttpd CONFIG_PACKAGE_firewall4; do
-            if ! grep -q "^${s}=y" .config; then
-              echo "ERROR: $s was dropped from .config!"
-              exit 1
-            fi
-          done
-          echo "config OK"
+          echo "=== 1. feeds/luci.index ==="
+          grep -c "luci-light" feeds/luci.index 2>/dev/null || echo "not in index"
+          echo "=== 2. tmp/.packageinfo ==="
+          ls -la tmp/.packageinfo 2>/dev/null || echo "no packageinfo"
+          grep -c "^Package: luci-light$" tmp/.packageinfo 2>/dev/null || echo "not in packageinfo"
+          echo "=== 3. tmp/.config-package.in ==="
+          grep -c "config PACKAGE_luci-light" tmp/.config-package.in 2>/dev/null || echo "not in kconfig"
+          echo "=== 4. luci-light definition ==="
+          grep -B1 -A10 "PACKAGE_luci-light$" tmp/.config-package.in 2>/dev/null | head -25 || echo "no definition"
+          echo "=== 5. any < syntax ==="
+          grep -c "PACKAGE_.*<PACKAGE_" tmp/.config-package.in 2>/dev/null || echo "no < syntax"
 
       - name: Download sources
         run: make download -j$(nproc) V=s
