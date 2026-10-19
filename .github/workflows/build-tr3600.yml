@@ -48,6 +48,13 @@ jobs:
 
       - name: Verify config kept LuCI
         run: |
+          echo "=== package/feeds ==="
+          ls package/feeds/ 2>/dev/null || echo "NO package/feeds dir"
+          ls package/feeds/luci/ 2>/dev/null | head -5 || echo "NO package/feeds/luci"
+          echo "=== PACKAGE_luci in generated Kconfig ==="
+          grep -c "^config PACKAGE_luci$" tmp/.config-package.in 2>/dev/null || echo "PACKAGE_luci NOT in tmp/.config-package.in"
+          echo "=== luci lines in .config ==="
+          grep "luci" .config || echo "NONE"
           for s in CONFIG_PACKAGE_luci CONFIG_PACKAGE_uhttpd CONFIG_PACKAGE_firewall4; do
             if ! grep -q "^${s}=y" .config; then
               echo "ERROR: $s was dropped from .config!"
