@@ -55,6 +55,10 @@ jobs:
           done
           echo "=== luci-base kconfig ==="
           grep -A15 "^config PACKAGE_luci-base$" tmp/.config-package.in | head -20
+          echo "=== rpcd-mod-luci kconfig ==="
+          grep -A10 "config PACKAGE_rpcd-mod-luci$" tmp/.config-package.in | head -12
+          echo "=== cgi-io kconfig ==="
+          grep -A10 "config PACKAGE_cgi-io$" tmp/.config-package.in | head -12
           echo "=== 1. feeds/luci.index ==="
           grep -c "luci-light" feeds/luci.index 2>/dev/null || echo "not in index"
           echo "=== 2. tmp/.packageinfo ==="
@@ -65,7 +69,7 @@ jobs:
           echo "=== 4. luci-light definition ==="
           grep -B1 -A10 "PACKAGE_luci-light$" tmp/.config-package.in 2>/dev/null | head -25 || echo "no definition"
           echo "=== 5. any < syntax ==="
-          grep -c "PACKAGE_.*<PACKAGE_" tmp/.config-package.in 2>/dev/null || echo "no < syntax"
+          grep -c "PACKAGE_.*<.*PACKAGE_" tmp/.config-package.in 2>/dev/null || echo "no < syntax"
 
       - name: Download sources
         run: make download -j$(nproc) V=s
